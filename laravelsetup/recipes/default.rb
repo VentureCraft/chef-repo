@@ -34,7 +34,7 @@ node[:deploy].each do |app_name, deploy|
 
     # workbenches = ['vcpermission', 'onboarding', 'revisionable', 'vcmail'];
     directory = '#{deploy[:deploy_to]}/current/workbench/venturecraft'
-    workbenches = Dir.entries(directory).select { |file| File.directory? File.join(directory, file}
+    workbenches = Dir.entries(directory).select { |file| File.directory? File.join(directory, file) }
 
     workbenches.each { |workbench|
         bash "workbench_composer_install_command" do

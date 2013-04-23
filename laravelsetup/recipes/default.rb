@@ -8,20 +8,6 @@ Chef::Log.debug("Running laravelsetup")
 migrated = false
 node[:deploy].each do |app_name, deploy|
 
-    if migrated == false
-        migrate_command = "php artisan migrate"
-
-        bash "run_migrate_command" do
-            Chef::Log.debug("Running migrate database (#{migrate_command}) in #{deploy[:deploy_to]}/current")
-            cwd "#{deploy[:deploy_to]}/current"
-            code <<-EOH
-                #{migrate_command}
-            EOH
-        end
-
-        migrated = true
-    end
-
     Chef::Log.debug("Node: #{deploy[:deploy_to]}")
 
     # directory "/srv/www/hired_incoming/current/app/storage" do
@@ -84,6 +70,21 @@ node[:deploy].each do |app_name, deploy|
         code <<-EOH
             #{artisan_dump_autoload_command}
         EOH
+    end
+
+
+    if migrated == false
+        migrate_command = "php artisan migrate"
+
+        bash "run_migrate_command" do
+            Chef::Log.debug("Running migrate database (#{migrate_command}) in #{deploy[:deploy_to]}/current")
+            cwd "#{deploy[:deploy_to]}/current"
+            code <<-EOH
+                #{migrate_command}
+            EOH
+        end
+
+        migrated = true
     end
 
 

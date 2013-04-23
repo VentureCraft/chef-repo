@@ -29,6 +29,18 @@ node[:deploy].each do |app_name, deploy|
     end
 
 
+    composer_install_command = "php composer.phar install"
+
+    bash "composer_install" do
+        Chef::Log.debug("Running #{composer_install_command} in #{deploy[:deploy_to]}/current")
+        cwd "#{deploy[:deploy_to]}/current"
+        # cwd "/srv/www/hired_incoming/current"
+        code <<-EOH
+            #{composer_install_command}
+        EOH
+    end
+
+
 
     artisan_dump_autoload_command = "php artisan dump-autoload"
 
@@ -42,14 +54,4 @@ node[:deploy].each do |app_name, deploy|
     end
 
 
-    composer_install_command = "php composer.phar install"
-
-    bash "composer_install" do
-        Chef::Log.debug("Running #{composer_install_command} in #{deploy[:deploy_to]}/current")
-        cwd "#{deploy[:deploy_to]}/current"
-        # cwd "/srv/www/hired_incoming/current"
-        code <<-EOH
-            #{composer_install_command}
-        EOH
-    end
 end

@@ -29,9 +29,26 @@ node[:deploy].each do |app_name, deploy|
     end
 
 
+
+    workbench_composer_install_command = "php ../../../composer.phar install"
+
+    workbenches = ['vcpermission', 'onboarding', 'revisionable', 'vcmail'];
+
+    workbenches.each { |workbench|
+        bash "workbench_composer_install_command" do
+            Chef::Log.debug("Running #{workbench_composer_install_command} in #{deploy[:deploy_to]}/current/workbench/venturecraft/#{workbench}")
+            cwd "#{deploy[:deploy_to]}/current/workbench/venturecraft/#{workbench}"
+            code <<-EOH
+                #{workbench_composer_install_command}
+            EOH
+        end
+    }
+
+
+
     composer_install_command = "php composer.phar install"
 
-    bash "composer_install" do
+    bash "composer_install_command" do
         Chef::Log.debug("Running #{composer_install_command} in #{deploy[:deploy_to]}/current")
         cwd "#{deploy[:deploy_to]}/current"
         # cwd "/srv/www/hired_incoming/current"

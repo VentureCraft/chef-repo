@@ -20,7 +20,7 @@ node[:deploy].each do |app_name, deploy|
 
     permissions_command = "sudo chmod -Rf 777 app/storage"
 
-    bash "composer_install" do
+    bash "change_permissions" do
         Chef::Log.debug("Setting permissions on #{deploy[:deploy_to]}/current/app/storage")
         cwd "#{deploy[:deploy_to]}/current"
         code <<-EOH
@@ -30,14 +30,14 @@ node[:deploy].each do |app_name, deploy|
 
 
 
-    composer_command = "php artisan dump-autoload"
+    artisan_dump_autoload_command = "php artisan dump-autoload"
 
     bash "artisan_dump_autoload" do
         Chef::Log.debug("Running #{composer_command} in #{deploy[:deploy_to]}/current")
         cwd "#{deploy[:deploy_to]}/current"
         # cwd "/srv/www/hired_incoming/current"
         code <<-EOH
-            #{composer_command}
+            #{artisan_dump_autoload_command}
         EOH
     end
 

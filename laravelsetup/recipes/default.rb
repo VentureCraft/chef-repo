@@ -32,10 +32,9 @@ node[:deploy].each do |app_name, deploy|
 
     workbench_composer_install_command = "php ../../../composer.phar install"
 
-    # workbenches = ['vcpermission', 'onboarding', 'revisionable', 'vcmail'];
-    directory = "#{deploy[:deploy_to]}/current/workbench/venturecraft"
-    workbenches = Dir.entries(directory).select { |file| File.directory? File.join(directory, file) }
 
+    directory = "#{deploy[:deploy_to]}/current/workbench/venturecraft"
+    workbenches = Dir.entries(directory).select {|file| File.directory? File.join(directory, file) and !(file =='.' || file == '..') }
     workbenches.each { |workbench|
         bash "workbench_composer_install_command" do
             Chef::Log.debug("Running #{workbench_composer_install_command} in #{deploy[:deploy_to]}/current/workbench/venturecraft/#{workbench}")

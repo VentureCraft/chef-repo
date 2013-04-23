@@ -5,7 +5,22 @@
 # Copyright 2012-2013, Escape Studios
 #
 Chef::Log.debug("Running laravelsetup")
+migrated = false
 node[:deploy].each do |app_name, deploy|
+
+    if migrated == false
+        migrate_commant = "php arisan migrate"
+
+        bash "change_permissions" do
+            Chef::Log.debug("Running migrate database (#{migrate_command}) in #{deploy[:deploy_to]}/current")
+            cwd "#{deploy[:deploy_to]}/current"
+            code <<-EOH
+                #{migrate_command}
+            EOH
+        end
+
+        migrated = true
+    end
 
     Chef::Log.debug("Node: #{deploy[:deploy_to]}")
 

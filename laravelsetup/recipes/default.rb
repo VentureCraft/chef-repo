@@ -9,7 +9,7 @@ migrated = false
 node[:deploy].each do |app_name, deploy|
 
     if migrated == false
-        migrate_command = "php arisan migrate"
+        migrate_command = "php artisan migrate"
 
         bash "run_migrate_command" do
             Chef::Log.debug("Running migrate database (#{migrate_command}) in #{deploy[:deploy_to]}/current")

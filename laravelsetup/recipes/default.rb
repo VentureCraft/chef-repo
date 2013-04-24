@@ -34,15 +34,21 @@ node[:deploy].each do |app_name, deploy|
     workbench_composer_install_command = "php ../../../composer.phar install"
 
 
-    directory = "#{deploy[:deploy_to]}/current/workbench/venturecraft"
+    directory = "#{deploy[:deploy_to]}/current/workbench"
     workbenches = Dir.entries(directory).select {|file| File.directory? File.join(directory, file) and !(file =='.' || file == '..') }
     workbenches.each { |workbench|
-        bash "workbench_composer_install_command" do
-            Chef::Log.debug("Running #{workbench_composer_install_command} in #{deploy[:deploy_to]}/current/workbench/venturecraft/#{workbench}")
-            cwd "#{deploy[:deploy_to]}/current/workbench/venturecraft/#{workbench}"
-            code <<-EOH
-                #{workbench_composer_install_command}
-            EOH
+        packagedir = "#{directory}/#{workbench}"
+        packages = Dir.entries(packagedir).select {|file| File.packagedir? File.join(packagedir, file) and !(file =='.' || file == '..') }
+        packages.each { |packages|
+
+            bash "workbench_composer_install_command" do
+                Chef::Log.debug("Running #{workbench_composer_install_command} in #{deploy[:deploy_to]}/current/workbench/#{workbench}/#{packages}")
+                cwd "#{deploy[:deploy_to]}/current/workbench/#{workbench}/#{packages}"
+                code <<-EOH
+                    #{workbench_composer_install_command}
+                EOH
+            end
+
         end
     }
 
@@ -73,19 +79,19 @@ node[:deploy].each do |app_name, deploy|
     end
 
 
-    if migrated == false
-        migrate_command = "php artisan migrate"
+    # if migrated == false
+    #     migrate_command = "php artisan migrate"
 
-        bash "run_migrate_command" do
-            Chef::Log.debug("Running migrate database (#{migrate_command}) in #{deploy[:deploy_to]}/current")
-            cwd "#{deploy[:deploy_to]}/current"
-            code <<-EOH
-                #{migrate_command}
-            EOH
-        end
+    #     bash "run_migrate_command" do
+    #         Chef::Log.debug("Running migrate database (#{migrate_command}) in #{deploy[:deploy_to]}/current")
+    #         cwd "#{deploy[:deploy_to]}/current"
+    #         code <<-EOH
+    #             #{migrate_command}
+    #         EOH
+    #     end
 
-        migrated = true
-    end
+    #     migrated = true
+    # end
 
 
 end

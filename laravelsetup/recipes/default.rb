@@ -33,12 +33,11 @@ node[:deploy].each do |app_name, deploy|
 
     workbench_composer_install_command = "php ../../../composer.phar install"
 
-
     directory = "#{deploy[:deploy_to]}/current/workbench"
     workbenches = Dir.entries(directory).select {|file| File.directory? File.join(directory, file) and !(file =='.' || file == '..') }
     workbenches.each { |workbench|
         packagedir = "#{directory}/#{workbench}"
-        packages = Dir.entries(packagedir).select {|file| File.packagedir? File.join(packagedir, file) and !(file =='.' || file == '..') }
+        packages = Dir.entries(packagedir).select {|file| File.directory? File.join(packagedir, file) and !(file =='.' || file == '..') }
         packages.each { |packages|
             bash "workbench_composer_install_command" do
                 Chef::Log.debug("Running #{workbench_composer_install_command} in #{deploy[:deploy_to]}/current/workbench/#{workbench}/#{packages}")
